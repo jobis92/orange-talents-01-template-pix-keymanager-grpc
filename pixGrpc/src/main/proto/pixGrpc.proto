@@ -9,6 +9,11 @@ package br.com.zup;
 
 service RegistraChavePixService {
   rpc registra(NovaChavePixRequest) returns (NovaChavePixResponse) {}
+
+}
+
+service RemoveChavePixService{
+  rpc remove(RemoveChavePixRequest) returns (RemoveChavePixResponse){}
 }
 
 enum TipoChave{
@@ -21,8 +26,8 @@ enum TipoChave{
 
 enum TipoConta{
   UNKNOWN_TIPO_CONTA = 0;
-  ContaCorrente = 1;
-  ContaPoupanca = 2;
+  CONTA_CORRENTE = 1;
+  CONTA_POUPANCA = 2;
 }
 
 message NovaChavePixRequest {
@@ -35,4 +40,14 @@ message NovaChavePixRequest {
 message NovaChavePixResponse {
   string clienteId = 1;
   string pixId = 2;
+}
+
+message RemoveChavePixRequest{
+  string pixId=1;
+  string clienteId=2;
+}
+
+message RemoveChavePixResponse{
+  string pixId=1;
+  string clienteId=2;
 }

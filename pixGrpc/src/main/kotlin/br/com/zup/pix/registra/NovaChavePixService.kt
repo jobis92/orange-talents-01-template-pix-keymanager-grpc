@@ -23,13 +23,14 @@ class NovaChavePixService(
     @Transactional
     fun registra(@Valid novaChave: NovaChavePix): ChavePix {
 
-        if (repository.existsByChave(novaChave.chave!!))
+        if (repository.existsByChave(novaChave.chave))
             throw ChaveExistenteException("Chave Pix '${novaChave.chave}' existente")
 
-        val response = itauClient.buscaContaPorTipoChave(novaChave.clienteId!!, novaChave.tipoConta!!.name)
-        val conta = response.body()?.toModel() ?: throw IllegalStateException("Cliente não encontrado no Itau")
+        val response = itauClient.buscaContaPorTipoChave(novaChave.clienteId!!, novaChave.tipoConta.name)
+        val conta = response.body() ?: throw IllegalStateException("Cliente não encontrado no Itau")
 
         val chave = novaChave.toModel(conta)
+
         repository.save(chave)
 
         return chave

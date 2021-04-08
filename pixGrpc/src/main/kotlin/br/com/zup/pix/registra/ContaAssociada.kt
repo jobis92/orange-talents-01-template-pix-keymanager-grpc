@@ -2,7 +2,6 @@ package br.com.zup.pix.registra
 
 import javax.persistence.Embeddable
 
-
 @Embeddable
 class ContaAssociada(
     val tipo: String,
@@ -13,3 +12,4 @@ class ContaAssociada(
     val nome: String,
     val cpf: String,
 )
+

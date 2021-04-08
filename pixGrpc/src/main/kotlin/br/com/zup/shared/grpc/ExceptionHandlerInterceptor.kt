@@ -1,7 +1,7 @@
 package br.com.zup.shared.grpc
 
 import br.com.zup.pix.validacoes.ChaveExistenteException
-import br.com.zup.pix.validacoes.ChaveNaoEncontrataException
+import br.com.zup.pix.validacoes.ChaveNaoEncontradaException
 import br.com.zup.pix.validacoes.ErrorHandler
 import com.google.rpc.BadRequest
 import com.google.rpc.Code
@@ -23,21 +23,21 @@ import javax.validation.ConstraintViolationException
 @InterceptorBean(ErrorHandler::class)
 class ExceptionHandlerInterceptor : MethodInterceptor<BindableService, Any?> {
 
-    private val LOGGER = LoggerFactory.getLogger(this::class.java)
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun intercept(context: MethodInvocationContext<BindableService, Any?>): Any? {
         try {
             return context.proceed()
         } catch (e: Exception) {
 
-            LOGGER.error(e.message)
+            logger.error(e.message)
 
             val statusError = when (e) {
                 is IllegalArgumentException -> Status.INVALID_ARGUMENT.withDescription(e.message).asRuntimeException()
                 is IllegalStateException -> Status.FAILED_PRECONDITION.withDescription(e.message).asRuntimeException()
                 is ConstraintViolationException -> handleConstraintValidationException(e)
                 is ChaveExistenteException -> Status.ALREADY_EXISTS.withDescription(e.message).asRuntimeException()
-                is ChaveNaoEncontrataException -> Status.NOT_FOUND.withDescription(e.message).asRuntimeException()
+                is ChaveNaoEncontradaException -> Status.NOT_FOUND.withDescription(e.message).asRuntimeException()
                 else -> Status.UNKNOWN.withDescription("unexpected error happened").asRuntimeException()
             }
 

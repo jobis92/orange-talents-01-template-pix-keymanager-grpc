@@ -1,7 +1,6 @@
 package br.com.zup.pix.registra
 
-import br.com.zup.TipoChave
-import br.com.zup.TipoConta
+import br.com.zup.dados.DadosDaContaResponse
 import br.com.zup.pix.TipoDeChave
 import br.com.zup.pix.TipoDeConta
 import br.com.zup.pix.validacoes.ValidPixKey
@@ -21,27 +20,27 @@ data class NovaChavePix(
     @field:NotNull
     val tipoChave: TipoDeChave,
     @field:Size(max = 77)
-    val chave: String?,
+    val chave: String,
     @field:NotNull
-    val tipoConta: TipoDeConta?
+    val tipoConta: TipoDeConta
 
 
 ) {
 
-    fun toModel(conta: ContaAssociada): ChavePix {
+    fun toModel(conta: DadosDaContaResponse): ChavePix {
         return ChavePix(
             clienteId = UUID.fromString(this.clienteId),
-            tipoChave = TipoChave.valueOf(this.tipoChave.name),
-            chave = if (this.tipoChave == TipoDeChave.ALEATORIA) UUID.randomUUID().toString() else this.chave!!,
-            tipoConta = TipoConta.valueOf(this.tipoConta!!.name),
+            tipoChave = this.tipoChave,
+            chave = if (this.tipoChave == TipoDeChave.ALEATORIA) UUID.randomUUID().toString() else this.chave,
+            tipoConta = this.tipoConta,
             conta = ContaAssociada(
                 conta.tipo,
-                conta.instituicao,
-                conta.ispb,
+                conta.instituicao.nome,
+                conta.instituicao.ispb,
                 conta.agencia,
                 conta.numero,
-                conta.nome,
-                conta.cpf
+                conta.titular.nome,
+                conta.titular.cpf
             )
         )
     }
